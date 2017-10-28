@@ -5,7 +5,7 @@
 body{
 	height: 100%;
 	width: 100%;
-	background-color: #E6E6E6;
+	background-color: #4D4D4D;
 	position: absolute;
 }
 
@@ -13,14 +13,16 @@ h1 {
 	text-align: center;
 	font-family: monospace;
 	font-size: 3em;
+	color: white;
 }
 
 .container{
-	width: 1008px;
+	width: 1000px;
 	margin: 0 auto;
+	line-height: 0;
 	height: 100%;
 	position: relative;
-	background-color: #02B9DA;
+	
 }
 .row{
 	display: block;
@@ -28,7 +30,7 @@ h1 {
 }
 
 #canvas{
-	overflow: hidden;
+	background-color: #CCCCCC;
 }
 
 #palette{
@@ -44,5 +46,5 @@ h1 {
 	color: white;
 	width: 20px;
 	height: 20px;
-	border: 1px solid #FBFBFB;
+	border: 1px solid #C9C9C9;
 }

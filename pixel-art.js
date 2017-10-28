@@ -55,7 +55,7 @@ function fillColor(e){
 }
 
 
-function drowCanvas (rows = 30,cols = 48) {
+function drowCanvas (rows = 30,cols = 50) {
 	var container = document.querySelector(".container");
 	for (var i = 0; i < rows; i++) {
 		for (var j = 0; j < cols; j++) {
