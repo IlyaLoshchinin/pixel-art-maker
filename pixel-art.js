@@ -56,20 +56,15 @@ function fillColor(e){
 
 
 function drowCanvas (rows = 30,cols = 48) {
-	
 	var container = document.querySelector(".container");
 	for (var i = 0; i < rows; i++) {
-		// var row = document.createElement("div");
-		// row.className = "row";
 		for (var j = 0; j < cols; j++) {
 			var cell = document.createElement("div");
 			cell.x = i;
 			cell.y = j;
 			cell.className = "cell";
-			
 			canvas.appendChild(cell);
 		}
-		
 	}
 }
 document.addEventListener("DOMContentLoaded", () => {
