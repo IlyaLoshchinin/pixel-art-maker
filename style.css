@@ -1,4 +1,4 @@
-html,body{
+*{
 	padding: 0;
 	margin: 0;
 }
@@ -16,16 +16,33 @@ h1 {
 }
 
 .container{
-	width: 1024px;
+	width: 1008px;
 	margin: 0 auto;
 	height: 100%;
 	position: relative;
 	background-color: #02B9DA;
 }
-
-#canvas{
-	border: 2px solid white;
-	/*padding: 1px;*/
+.row{
+	display: block;
+	height: 20px;
 }
 
-#palette
+#canvas{
+	overflow: hidden;
+}
+
+#palette{
+	border: 2px solid gray;
+	background-color: #CCCCCC;
+	height: 12%;
+	width: 99.7%;
+}
+
+.cell {
+	box-sizing: border-box;
+	display: inline-block;
+	color: white;
+	width: 20px;
+	height: 20px;
+	border: 1px solid #FBFBFB;
+}
