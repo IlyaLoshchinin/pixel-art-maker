@@ -55,18 +55,24 @@ function fillColor(e){
 }
 
 
-function drowCanvas (rows = 30,cols = 50) {
+function drowCanvas (rows = 10,cols = 50) {
 	var container = document.querySelector(".container");
 	for (var i = 0; i < rows; i++) {
 		for (var j = 0; j < cols; j++) {
 			var cell = document.createElement("div");
-			cell.x = i;
-			cell.y = j;
 			cell.className = "cell";
+			cell.style.width = Math.round(container.clientWidth / cols) + "px";
+			cell.style.height = cell.style.width;
 			canvas.appendChild(cell);
 		}
 	}
 }
 document.addEventListener("DOMContentLoaded", () => {
 	drowCanvas();
+
+
 }, false)
+
+
+
+ 	
