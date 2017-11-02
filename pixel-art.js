@@ -44,10 +44,11 @@ function colorListener (e) {
 		e = e || window.event;
 		var target = e.target;
 		if(target.className.includes("color")){
+			var newColor = target.style['background-color'];
 			if(e.which != 3){
-				currentFirstColor = target.backgroundColor;
+				currentFirstColor = newColor;
 			}else{
-				currentSecondColor = target.backgroundColor;
+				currentSecondColor = newColor;
 			}
 		}
 }
