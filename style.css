@@ -6,6 +6,7 @@ body{
 	height: 100%;
 	width: 100%;
 	background-color: #4D4D4D;
+	position: absolute;
 }
 
 h1 {
@@ -16,12 +17,11 @@ h1 {
 }
 
 .container{
-	position: relative;
 	width: 50%;
 	margin: 0 auto;
 	line-height: 0;
 	height: 100%;
-	overflow: hidden;
+	position: relative;
 }
 .row{
 	display: block;
@@ -30,10 +30,11 @@ h1 {
 
 #canvas{
 	background-color: #CCCCCC;
+	cursor:  url("brush.png"), pointer;
 }
 
 #palette{
-	position: relative;
+	
 	margin-top: 5px;
 	border: 1px solid #F4F4F4;
 	width: 100%;
@@ -41,6 +42,11 @@ h1 {
 }
 #palette div{
 	display: inline-block;
+}
+
+#setting{
+
+
 }
 
 #canvas > div[class*='cell'] {

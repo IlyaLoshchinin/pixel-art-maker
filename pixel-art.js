@@ -30,7 +30,7 @@ var currentSecondColor = COLORS[1];
 
 var canvas = document.getElementById("canvas");
 var palette = document.getElementById("palette");
-var settings = document.getElementById("settings");
+var setting = document.getElementById("setting");
 
 var container = document.querySelector(".container");
 
@@ -78,7 +78,7 @@ function drowCanvas (size = 40) {
 		for (var j = 0; j < size; j++) {
 			var cell = document.createElement("div");
 			cell.className = `cell-x${i}-y${j}`;
-			cell.style.width = `${Math.min(container.clientWidth / (size))}px`;
+			cell.style.width = `${Math.min(container.clientWidth / size)}px`;
 			cell.style.height = cell.style.width;
 			canvas.appendChild(cell);
 		}
