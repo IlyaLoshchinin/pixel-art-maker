@@ -6,7 +6,6 @@ body{
 	height: 100%;
 	width: 100%;
 	background-color: #4D4D4D;
-	position: absolute;
 }
 
 h1 {
@@ -17,12 +16,12 @@ h1 {
 }
 
 .container{
+	position: relative;
 	width: 50%;
 	margin: 0 auto;
 	line-height: 0;
 	height: 100%;
-	position: relative;
-	
+	overflow: hidden;
 }
 .row{
 	display: block;
@@ -34,13 +33,17 @@ h1 {
 }
 
 #palette{
-	border: 2px solid gray;
-	background-color: #CCCCCC;
-	height: 12%;
-	width: 99.7%;
+	position: relative;
+	margin-top: 5px;
+	border: 1px solid #F4F4F4;
+	width: 100%;
+	background: white;
+}
+#palette div{
+	display: inline-block;
 }
 
-.cell {
+#canvas > div[class*='cell'] {
 	box-sizing: border-box;
 	display: inline-block;
 	color: white;

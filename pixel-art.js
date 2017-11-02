@@ -1,6 +1,6 @@
 'use strict';
 
-var colors = [
+var COLORS = [
 	'white',
 	'black',
 	'red',
@@ -15,7 +15,7 @@ var colors = [
 	'aqua',
 	'darkblue',
 	'cornsilk',
-	'deepslyblue',
+	'deepskyblue',
 	'deeppink',
 	'gold',
 	'indigo',
@@ -23,15 +23,34 @@ var colors = [
 	'fuchsia'
 ]; //20 colors
 
-//default size 50x50
-var canvasSize = 50;
-var currentFirstColor = colors[5];
-var currentSecondColor = colors[1];
+//default size 40x40
+var canvasSize = 40;
+var currentFirstColor = COLORS[0];
+var currentSecondColor = COLORS[1];
 
 var canvas = document.getElementById("canvas");
+var palette = document.getElementById("palette");
+var settings = document.getElementById("settings");
+
+var container = document.querySelector(".container");
 
 canvas.addEventListener("mousedown", paintListener, false)
 canvas.addEventListener("contextmenu",  (e) => e.preventDefault(), false)
+
+palette.addEventListener("mousedown", colorListener, false)
+palette.addEventListener("contextmenu",  (e) => e.preventDefault(), false)
+
+function colorListener (e) {
+		e = e || window.event;
+		var target = e.target;
+		if(target.className.includes("color")){
+			if(e.which != 3){
+				currentFirstColor = target.backgroundColor;
+			}else{
+				currentSecondColor = target.backgroundColor;
+			}
+		}
+}
 
 function paintListener(e){
 		e.preventDefault();
@@ -43,8 +62,7 @@ function paintListener(e){
 function fillColor(e){
 		 e = e || window.event;
 		var target = e.target ;
-		console.log(e.which);
-		if (target.className == "cell"){
+		if (target.className.includes("cell")){
 			if(e.which != 3){
 				target.style.backgroundColor = currentFirstColor;
 			}else{
@@ -54,21 +72,33 @@ function fillColor(e){
 }
 
 
-function drowCanvas (size = 50) {
-	var container = document.querySelector(".container");
+function drowCanvas (size = 40) {
 	for (var i = 0; i < size; i++) {
 		for (var j = 0; j < size; j++) {
 			var cell = document.createElement("div");
-			cell.className = "cell";
-			cell.style.width = Math.min(container.clientWidth / (size)) + "px";
+			cell.className = `cell-x${i}-y${j}`;
+			cell.style.width = `${Math.min(container.clientWidth / (size))}px`;
 			cell.style.height = cell.style.width;
 			canvas.appendChild(cell);
 		}
 	}
 }
-document.addEventListener("DOMContentLoaded", () => {
-	drowCanvas(canvasSize);
 
+function drowPalette(colors = ['blue','red','black','white']){
+	console.log(colors.length);
+	for (var i = 0; i < colors.length; i++) {
+	 var colorDiv = document.createElement("div");
+	 colorDiv.className = `color-${colors[i]}`;
+	 colorDiv.style.backgroundColor = colors[i];
+	 colorDiv.style.width = `${Math.min(container.clientWidth / colors.length) - 0.1}px`;
+	 colorDiv.style.height = '40px'; 
+	 palette.appendChild(colorDiv);
+	}
+}
+document.addEventListener("DOMContentLoaded", () => {
+	
+	drowCanvas(canvasSize);
+	drowPalette(COLORS);
 
 }, false)
 
