@@ -17,7 +17,7 @@ h1 {
 }
 
 .container{
-	width: 50%;
+	width: 55%;
 	margin: 0 auto;
 	line-height: 0;
 	height: 100%;
@@ -48,13 +48,13 @@ div[class*='color-']{
 }
 #palette div:hover{
 	transform: scaleX(1.1);
-	
 }
+
 
 #setting{
 	background: white;
 	width: 100%;
-	height: 100px;
+	min-height: 100px;
 	margin-top: 10px;
 }
 .row-flex{
@@ -69,10 +69,10 @@ div[class*='color-']{
 	margin-right: 20px;
 }
 
-.color-result{
+.color-result, .lbm-color, .rbm-color{
 	background-color: #060606;
 	border: 1px solid black;
-	height: 40px;
+	height: 30px;
 	width: 40px;
 	display: inline-block;
 }
@@ -84,4 +84,57 @@ div[class*='color-']{
 	/*width: 20px;
 	height: 20px;*/
 	border: 1px solid #C9C9C9;
+}
+
+/*Thanks for example 
+source: http://dimox.name/custom-checkboxes-and-radio-buttons-using-css-only
+*/
+.checkbox {
+  vertical-align: top;
+  width: 17px;
+  height: 17px;
+}
+
+.checkbox + label {
+  cursor: pointer;
+}
+
+.checkbox:not(checked) {
+  position: absolute;
+  opacity: 0;
+}
+.checkbox:not(checked) + label {
+  position: relative; 
+  padding: 0 60px 0 0; 
+}
+
+/* Оформление первой части чекбокса в выключенном состоянии (фон). */
+.checkbox:not(checked) + label:before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  right: 0;
+  width: 50px;
+  height: 26px;
+  background: #CDD1DA;
+  box-shadow: inset 0 2px 3px rgba(0,0,0,.2);
+}
+/* Оформление второй части чекбокса в выключенном состоянии (переключатель). */
+.checkbox:not(checked) + label:after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  right: 26px;
+  width: 22px;
+  height: 22px;
+  background: #FFF;
+  transition: all .2s; 
+}
+
+.checkbox:checked + label:before {
+  background: #0198C4;
+}
+
+.checkbox:checked + label:after {
+  right: 2px;
 }

@@ -23,19 +23,24 @@ var COLORS = [
 	'fuchsia'
 ]; //20 colors
 
-//default size 40x40
-var canvasSize = 40;
-var currentFirstColor = COLORS[0];
-var currentSecondColor = COLORS[1];
+
 
 var canvas = document.getElementById("canvas");
 var palette = document.getElementById("palette");
 var setting = document.getElementById("setting");
 var colorPicker = document.getElementById("colorPicker");
 
-
 var container = document.querySelector(".container");
 var colorPickerValue = document.querySelector(".color-result");
+var lbmColor = document.querySelector(".lbm-color").style;
+var rbmColor = document.querySelector(".rbm-color").style;
+
+
+
+//default size 40x40
+var canvasSize = 40;
+var currentFirstColor = lbmColor.backgroundColor = COLORS[0];
+var currentSecondColor = rbmColor.backgroundColor = COLORS[1];
 
 
 canvas.addEventListener("mousedown", paintListener, false);
@@ -48,12 +53,7 @@ colorPickerValue.addEventListener("mousedown", colorListener, false);
 colorPickerValue.addEventListener("contextmenu",  (e) => e.preventDefault(), false);
 
 
-
-colorPicker.addEventListener("change", (e) =>{ 
-	e = e || window.event;
-	var target = e.target;
-	colorPickerValue.style.backgroundColor = target.value; 
-}, false);
+colorPicker.addEventListener("change", (e) => colorPickerValue.style.backgroundColor = e.target.value, false);
 
 
 
@@ -64,8 +64,10 @@ function colorListener (e) {
 			var newColor = getComputedStyle(target, null);
 			if(e.which != 3){
 				currentFirstColor = newColor.backgroundColor;
+				lbmColor.backgroundColor = currentFirstColor;
 			}else{
 				currentSecondColor = newColor.backgroundColor;
+				rbmColor.backgroundColor = currentSecondColor;
 			}
 		}
 }
@@ -94,7 +96,9 @@ function drowCanvas (size = 40) {
 	for (var i = 0; i < size; i++) {
 		for (var j = 0; j < size; j++) {
 			var cell = document.createElement("div");
-			cell.className = `cell-x${i}-y${j}`;
+			cell.className = `cell`;
+			cell.setAttribute("x", i);
+			cell.setAttribute("y", j);
 			cell.style.width = `${Math.min(container.clientWidth / size)}px`;
 			cell.style.height = cell.style.width;
 			canvas.appendChild(cell);
@@ -102,17 +106,35 @@ function drowCanvas (size = 40) {
 	}
 }
 
+function flood_fill (x,y,oldColor,newColor) {
+	
+
+
+
+
+	if(target.backgroundColor != oldColor) 
+		break;
+
+	target.backgroundColor = newColor;
+	flood_fill(x - 1,y,oldColor,newColor);
+	flood_fill(x + 1,y,oldColor,newColor);
+	flood_fill(x,y - 1,oldColor,newColor);
+	flood_fill(x,y + 1,oldColor,newColor);
+}
+
 function drowPalette(colors = ['blue','red','black','white']){
 	console.log(colors.length);
 	for (var i = 0; i < colors.length; i++) {
 	 var colorDiv = document.createElement("div");
-	 colorDiv.className = `color-${colors[i]}`;
+	 colorDiv.className = `color-${i+1}`;
 	 colorDiv.style.backgroundColor = colors[i];
-	 colorDiv.style.width = `${Math.min(container.clientWidth / colors.length)}px`;
+	 colorDiv.style.width = `${Math.min(container.clientWidth / colors.length) - 0.1}px`;
 	 colorDiv.style.height = '40px'; 
 	 palette.appendChild(colorDiv);
 	}
 }
+
+//start
 document.addEventListener("DOMContentLoaded", () => {
 	
 	drowCanvas(canvasSize);
