@@ -24,8 +24,7 @@ var colors = [
 ]; //20 colors
 
 //default size 50x50
-// var canvasColumns = 40;
-// var canvasRows = 20;
+var canvasSize = 50;
 var currentFirstColor = colors[5];
 var currentSecondColor = colors[1];
 
@@ -55,20 +54,20 @@ function fillColor(e){
 }
 
 
-function drowCanvas (rows = 10,cols = 50) {
+function drowCanvas (size = 50) {
 	var container = document.querySelector(".container");
-	for (var i = 0; i < rows; i++) {
-		for (var j = 0; j < cols; j++) {
+	for (var i = 0; i < size; i++) {
+		for (var j = 0; j < size; j++) {
 			var cell = document.createElement("div");
 			cell.className = "cell";
-			cell.style.width = Math.round(container.clientWidth / cols) + "px";
+			cell.style.width = Math.min(container.clientWidth / (size)) + "px";
 			cell.style.height = cell.style.width;
 			canvas.appendChild(cell);
 		}
 	}
 }
 document.addEventListener("DOMContentLoaded", () => {
-	drowCanvas();
+	drowCanvas(canvasSize);
 
 
 }, false)
