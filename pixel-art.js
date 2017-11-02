@@ -31,24 +31,41 @@ var currentSecondColor = COLORS[1];
 var canvas = document.getElementById("canvas");
 var palette = document.getElementById("palette");
 var setting = document.getElementById("setting");
+var colorPicker = document.getElementById("colorPicker");
+
 
 var container = document.querySelector(".container");
+var colorPickerValue = document.querySelector(".color-result");
 
-canvas.addEventListener("mousedown", paintListener, false)
-canvas.addEventListener("contextmenu",  (e) => e.preventDefault(), false)
 
-palette.addEventListener("mousedown", colorListener, false)
-palette.addEventListener("contextmenu",  (e) => e.preventDefault(), false)
+canvas.addEventListener("mousedown", paintListener, false);
+canvas.addEventListener("contextmenu",  (e) => e.preventDefault(), false);
+
+palette.addEventListener("mousedown", colorListener, false);
+palette.addEventListener("contextmenu",  (e) => e.preventDefault(), false);
+
+colorPickerValue.addEventListener("mousedown", colorListener, false);
+colorPickerValue.addEventListener("contextmenu",  (e) => e.preventDefault(), false);
+
+
+
+colorPicker.addEventListener("change", (e) =>{ 
+	e = e || window.event;
+	var target = e.target;
+	colorPickerValue.style.backgroundColor = target.value; 
+}, false);
+
+
 
 function colorListener (e) {
 		e = e || window.event;
 		var target = e.target;
 		if(target.className.includes("color")){
-			var newColor = target.style['background-color'];
+			var newColor = getComputedStyle(target, null);
 			if(e.which != 3){
-				currentFirstColor = newColor;
+				currentFirstColor = newColor.backgroundColor;
 			}else{
-				currentSecondColor = newColor;
+				currentSecondColor = newColor.backgroundColor;
 			}
 		}
 }
@@ -91,7 +108,7 @@ function drowPalette(colors = ['blue','red','black','white']){
 	 var colorDiv = document.createElement("div");
 	 colorDiv.className = `color-${colors[i]}`;
 	 colorDiv.style.backgroundColor = colors[i];
-	 colorDiv.style.width = `${Math.min(container.clientWidth / colors.length) - 0.1}px`;
+	 colorDiv.style.width = `${Math.min(container.clientWidth / colors.length)}px`;
 	 colorDiv.style.height = '40px'; 
 	 palette.appendChild(colorDiv);
 	}
