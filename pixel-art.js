@@ -88,18 +88,20 @@ function fillColor(e){
 			}else{
 				target.style.backgroundColor = currentSecondColor;
 			}
+			target.style.boxShadow = 'none';
 		}	
 }
 
 
 function drowCanvas (size = 40) {
+	var containerComputed = getComputedStyle(container);
 	for (var i = 0; i < size; i++) {
 		for (var j = 0; j < size; j++) {
 			var cell = document.createElement("div");
 			cell.className = `cell`;
 			cell.setAttribute("x", i);
 			cell.setAttribute("y", j);
-			cell.style.width = `${Math.min(container.clientWidth / size)}px`;
+			cell.style.width = `${parseInt(containerComputed.width, 10)  / size }px`;
 			cell.style.height = cell.style.width;
 			canvas.appendChild(cell);
 		}
@@ -128,7 +130,7 @@ function drowPalette(colors = ['blue','red','black','white']){
 	 var colorDiv = document.createElement("div");
 	 colorDiv.className = `color-${i+1}`;
 	 colorDiv.style.backgroundColor = colors[i];
-	 colorDiv.style.width = `${Math.min(container.clientWidth / colors.length) - 0.1}px`;
+	 colorDiv.style.width = `${container.clientWidth / colors.length }px`;
 	 colorDiv.style.height = '40px'; 
 	 palette.appendChild(colorDiv);
 	}
