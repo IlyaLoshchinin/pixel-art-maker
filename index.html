@@ -15,17 +15,32 @@
 			
 		</div>
 		<div id="setting">
+
 			<div class="row-flex">
+				
 				<p>Current color: LBM-><div class="lbm-color"></div>
 				 RMB-><div class="rbm-color"></div>
 				 <input type="checkbox" class="checkbox" id="checkbox" />
 					<label for="checkbox">Flood fill mode</label></p>
+					<p>Size of canvas: 
+					<input id="sizeCanvas" type="number" list="sizes" min="10" max="90" onkeydown="isDelete()" value="40" step="5">
+					<datalist id="sizes">
+				    <option value="10">10x10</option>
+				    <option value="20">20x20</option>
+				    <option value="30">30x30</option>
+				    <option value="40">40x40</option>
+				    <option value="50">50x50</option>
+				    <option value="60">60x60</option>
+				    <option value="70">70x70</option>
+				    <option value="80">80x80</option>
+				    <option value="90">90x90</option>
+				  </datalist></p>
 			</div>
 			<div class="row-flex">
 			<div class="custom-color">Select custom color ->
 				<input id="colorPicker" type="color"></div>
 			and click the<div class="color-result"></div>(LBM or RBM) to choose.
-		</div>
+			</div>
 
 
 	</div>
