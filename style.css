@@ -36,11 +36,11 @@ h1 {
 }
 
 .brush{
-	cursor:  url("img/brush.png"), pointer;
+	cursor:  url("img/brush-white.png") -2 -3, pointer;
 }
 
 .flood-fill{
-	cursor:  url("img/fill.png") 8 8, pointer;
+	cursor:  url("img/fill-white.png") 8 8, pointer;
 
 }
 
