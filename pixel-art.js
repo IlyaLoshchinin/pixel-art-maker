@@ -8,7 +8,7 @@ var COLORS = [
     'pink',
     'brown',
     'green',
-    'cyan',
+    'cornflowerblue',
     'blue',
     'purple',
     'dimgray',
@@ -51,17 +51,17 @@ colorPicker.addEventListener("change", (e) => colorPickerValue.style.backgroundC
 
 sizeCanvas.addEventListener("change", repaintCanvas, false);
 
-checkbox.addEventListener("change", (e) => floodFillMode.turnOn = floodFillMode.turnOn ? false : true , false);
+checkbox.addEventListener("change", (e) => floodFillMode.turnOn = floodFillMode.turnOn ? false : true, false);
 
-var floodFillMode = new Proxy({ turnOn : false  }, {
-	 	get(target, prop) {
-	    	return target[prop];
-  },
-	  set(target, prop, value) {
-		    canvas.className = canvas.className == "brush" ? "flood-fill" : "brush" ; 
-		    target[prop] = value;
-		    return true;
-  }
+var floodFillMode = new Proxy({ turnOn: false }, {
+    get(target, prop) {
+        return target[prop];
+    },
+    set(target, prop, value) {
+        canvas.className = canvas.className == "brush" ? "flood-fill" : "brush";
+        target[prop] = value;
+        return true;
+    }
 });
 
 
@@ -78,21 +78,24 @@ function colorListener(e) {
 
 }
 
+
+var floodFillThrottle = throttle(floodFill, 1000);
+
 function paintListener(e) {
-	if(!floodFillMode.turnOn){
+    if (!floodFillMode.turnOn) {
 
-	e.preventDefault();
-    fillColor();
-    canvas.addEventListener("mouseenter", fillColor, true);
-    canvas.addEventListener("mouseup", (e) => canvas.removeEventListener("mouseenter", fillColor, true), false)
+        e.preventDefault();
+        fillColor();
+        canvas.addEventListener("mouseenter", fillColor, true);
+        canvas.addEventListener("mouseup", (e) => canvas.removeEventListener("mouseenter", fillColor, true), false)
 
-	}else { //turned flood fill mode on
-		
- 	e = e || window.event;
-    var target = e.target;
-    floodFill(parseInt(target.getAttribute("x")),parseInt(target.getAttribute("y")), getComputedStyle(target).backgroundColor, whichColor(e));
+    } else { //turned flood fill mode on
 
-	}
+        e = e || window.event;
+        var target = e.target;
+        floodFillThrottle(parseInt(target.getAttribute("x")), parseInt(target.getAttribute("y")), getComputedStyle(target).backgroundColor, whichColor(e));
+
+    }
 
 }
 
@@ -152,10 +155,11 @@ function drowCanvas(size = 40) {
 function floodFill(x, y, oldColor, newColor) {
 
     var target = document.querySelector(`.cell[x='${x}'][y='${y}']`);
-   
-    if (!target || getComputedStyle(target).backgroundColor != oldColor)
-       return;
-    
+
+    if (!target || getComputedStyle(target).backgroundColor != oldColor || oldColor == newColor){
+        return;
+    }
+
     target.style.backgroundColor = newColor;
     target.classList.add('filled');
     floodFill(x - 1, y, oldColor, newColor);
@@ -175,6 +179,43 @@ function drowPalette(colors = ['blue', 'red', 'black', 'white']) {
         palette.appendChild(colorDiv);
     }
 }
+
+
+
+function throttle(func, ms) {
+
+  var isThrottled = false,
+    savedArgs,
+    savedThis;
+
+  function wrapper() {
+
+    if (isThrottled) { 
+      savedArgs = arguments;
+      savedThis = this;
+      return;
+    }
+
+    func.apply(this, arguments); 
+
+    isThrottled = true;
+
+    setTimeout(function() {
+      isThrottled = false; 
+      if (savedArgs) {
+        wrapper.apply(savedThis, savedArgs);
+        savedArgs = savedThis = null;
+      }
+    }, ms);
+  }
+
+  return wrapper;
+}
+
+
+
+
+
 
 //start
 document.addEventListener("DOMContentLoaded", () => {
