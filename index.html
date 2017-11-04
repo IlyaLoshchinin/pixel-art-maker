@@ -8,7 +8,7 @@
 <body>
 	<h1>Pixel Art Maker</h1>
 	<div class="container">
-		<div id="canvas">
+		<div id="canvas" class="brush">
 			
 		</div>
 		<div id="palette">
@@ -22,7 +22,7 @@
 				 RMB-><div class="rbm-color"></div>
 				 <input type="checkbox" class="checkbox" id="checkbox" />
 					<label for="checkbox">Flood fill mode</label></p>
-					<p>Size of canvas: 
+					<p>Count of cell (NxN): 
 					<input id="sizeCanvas" type="number" list="sizes" min="10" max="90" onkeydown="isDelete()" value="40" step="5">
 					<datalist id="sizes">
 				    <option value="10">10x10</option>

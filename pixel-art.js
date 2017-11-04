@@ -31,7 +31,7 @@ var rbmColor = document.querySelector(".rbm-color").style;
 
 //default size 40x40
 var canvasSize = 40;
-var floodFillMode = false;
+// var floodFillMode = false;
 var currentFirstColor = lbmColor.backgroundColor = COLORS[0];
 var currentSecondColor = rbmColor.backgroundColor = COLORS[1];
 
@@ -51,9 +51,18 @@ colorPicker.addEventListener("change", (e) => colorPickerValue.style.backgroundC
 
 sizeCanvas.addEventListener("change", repaintCanvas, false);
 
-checkbox.addEventListener("change", (e) => floodFillMode = floodFillMode ? false : true , false);
+checkbox.addEventListener("change", (e) => floodFillMode.turnOn = floodFillMode.turnOn ? false : true , false);
 
-
+var floodFillMode = new Proxy({ turnOn : false  }, {
+	 	get(target, prop) {
+	    	return target[prop];
+  },
+	  set(target, prop, value) {
+		    canvas.className = canvas.className == "brush" ? "flood-fill" : "brush" ; 
+		    target[prop] = value;
+		    return true;
+  }
+});
 
 
 function colorListener(e) {
@@ -70,14 +79,14 @@ function colorListener(e) {
 }
 
 function paintListener(e) {
-	if(!floodFillMode){
+	if(!floodFillMode.turnOn){
 
 	e.preventDefault();
     fillColor();
     canvas.addEventListener("mouseenter", fillColor, true);
     canvas.addEventListener("mouseup", (e) => canvas.removeEventListener("mouseenter", fillColor, true), false)
 
-	}else { //flood fill mode on
+	}else { //turned flood fill mode on
 		
  	e = e || window.event;
     var target = e.target;
@@ -106,7 +115,7 @@ function fillColor(e) {
         } else {
             target.style.backgroundColor = currentSecondColor;
         }
-        target.className += ' filled';
+        target.classList.add('filled');
     }
 }
 
@@ -129,7 +138,7 @@ function drowCanvas(size = 40) {
     var dimention = `${parseInt(containerComputed.width, 10)  / size}px`
     for (var i = 0; i < size; i++) {
         var cell = document.createElement("div");
-        cell.className = `cell`;
+        cell.className = 'cell';
         cell.style.width = dimention;
         cell.style.height = dimention;
         cell.setAttribute("x", i);
@@ -143,18 +152,12 @@ function drowCanvas(size = 40) {
 function floodFill(x, y, oldColor, newColor) {
 
     var target = document.querySelector(`.cell[x='${x}'][y='${y}']`);
-    console.log(target.getAttribute("x"));
-    console.log(target.getAttribute("y"));
-    console.log(oldColor );
-    console.log(newColor );
-    
-
-    if (getComputedStyle(target).backgroundColor != oldColor){
-        return 0;
-    }
-
+   
+    if (!target || getComputedStyle(target).backgroundColor != oldColor)
+       return;
     
     target.style.backgroundColor = newColor;
+    target.classList.add('filled');
     floodFill(x - 1, y, oldColor, newColor);
     floodFill(x, y - 1, oldColor, newColor);
     floodFill(x + 1, y, oldColor, newColor);

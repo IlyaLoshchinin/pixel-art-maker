@@ -17,7 +17,7 @@ h1 {
 }
 
 .container{
-	width: 55%;
+	width: 50%;
 	margin: 0 auto;
 	
 	height: 100%;
@@ -32,7 +32,16 @@ h1 {
 	line-height: 0;
 	width: 100%;
 	
-	cursor:  url("brush.png"), pointer;
+	
+}
+
+.brush{
+	cursor:  url("img/brush.png"), pointer;
+}
+
+.flood-fill{
+	cursor:  url("img/fill.png") 8 8, pointer;
+
 }
 
 #palette{
