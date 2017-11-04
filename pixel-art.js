@@ -23,6 +23,9 @@ var COLORS = [
     'fuchsia'
 ]; //20 colors
 
+
+var historyPaint = [];
+
 var container = document.querySelector(".container");
 var colorPickerValue = document.querySelector(".color-result");
 var lbmColor = document.querySelector(".lbm-color").style;
@@ -31,10 +34,11 @@ var rbmColor = document.querySelector(".rbm-color").style;
 
 //default size 40x40
 var canvasSize = 40;
-// var floodFillMode = false;
 var currentFirstColor = lbmColor.backgroundColor = COLORS[0];
 var currentSecondColor = rbmColor.backgroundColor = COLORS[1];
 
+
+document.addEventListener("keydown", stepBack, false);
 
 canvas.addEventListener("mousedown", paintListener, false);
 canvas.addEventListener("contextmenu", (e) => e.preventDefault(), false);
@@ -65,6 +69,7 @@ var floodFillMode = new Proxy({ turnOn: false }, {
 });
 
 
+
 function colorListener(e) {
     e = e || window.event;
     var target = e.target;
@@ -79,8 +84,6 @@ function colorListener(e) {
 }
 
 
-var floodFillThrottle = throttle(floodFill, 1000);
-
 function paintListener(e) {
     if (!floodFillMode.turnOn) {
 
@@ -93,46 +96,56 @@ function paintListener(e) {
 
         e = e || window.event;
         var target = e.target;
-        floodFillThrottle(parseInt(target.getAttribute("x")), parseInt(target.getAttribute("y")), getComputedStyle(target).backgroundColor, whichColor(e));
+        let prev = historyPaint.length;
+        floodFill(parseInt(getX(target)), parseInt(getY(target)), getBGColor(target), whichColor(e));
 
+        // if size of array(historyPaint) did't change => set prev value to the last element of historyPaint otherwise subtraction of curr size and prev value
+        historyPaint[historyPaint.length - 1].countOfFloodFill = prev != historyPaint.length ? historyPaint.length - prev : prev;
     }
 
 }
 
-
-function whichColor(e) {
-    var code = e.which || e.keyCode;
-    if (code != 3) {
-        return currentFirstColor;
-    }
-    return currentSecondColor;
+function getBGColor(target) {
+    return getComputedStyle(target).backgroundColor;
 }
+
+function getX(target) {
+    return target.x == 0 || target.x ? target.x : target.getAttribute("x");
+}
+
+function getY(target) {
+    return target.y == 0 || target.y ? target.y : target.getAttribute("y");
+}
+
 
 
 function fillColor(e) {
     e = e || window.event;
     var target = e.target;
+    let newColor, oldColor;
     if (target.className.includes("cell")) {
+        oldColor = getBGColor(target);
+
         if (e.which != 3) {
-            target.style.backgroundColor = currentFirstColor;
+            target.style.backgroundColor = newColor = currentFirstColor;
         } else {
-            target.style.backgroundColor = currentSecondColor;
+            target.style.backgroundColor = newColor = currentSecondColor;
         }
+
+        historyPaint.push({ x: parseInt(getX(target)), y: parseInt(getY(target)), color: newColor, oldColor: oldColor, hashCode: getX(target) + "-" + getY(target) });
+        // console.log(historyPaint.length);
+
         target.classList.add('filled');
     }
 }
-
-function isDelete(e) {
-    e = e || window.event;
-    return e.keyCode != 8 ? e.preventDefault() : true;
-};
 
 function repaintCanvas(e) {
     e = e || window.event;
     if (canvas.hasChildNodes()) {
         canvas.innerHTML = '';
     }
-    setTimeout(drowCanvas(e.target.value >= 10 ? e.target.value : 10), 4);
+    let newCountOfCell = e.target.value;
+    setTimeout(drowCanvas(newCountOfCell >= 10 ? newCountOfCell : 10), 4);
 }
 
 function drowCanvas(size = 40) {
@@ -156,10 +169,11 @@ function floodFill(x, y, oldColor, newColor) {
 
     var target = document.querySelector(`.cell[x='${x}'][y='${y}']`);
 
-    if (!target || getComputedStyle(target).backgroundColor != oldColor || oldColor == newColor){
+    if (!target || getComputedStyle(target).backgroundColor != oldColor || oldColor == newColor) {
         return;
     }
 
+    historyPaint.push({ x: x, y: y, color: newColor, oldColor: oldColor, hashCode: x + "-" + y });
     target.style.backgroundColor = newColor;
     target.classList.add('filled');
     floodFill(x - 1, y, oldColor, newColor);
@@ -178,42 +192,60 @@ function drowPalette(colors = ['blue', 'red', 'black', 'white']) {
         colorDiv.style.height = '40px';
         palette.appendChild(colorDiv);
     }
+
+}
+
+function cleanCell(target) {
+    if (!target) return;
+
+    var cell = document.querySelector(`.cell[x='${getX(target)}'][y='${getY(target)}']`);
+    cell.style.backgroundColor = target.oldColor;
+
+    if (!historyPaint.find((el) => el.hashCode == target.hashCode ? true : undefined))
+        cell.classList.remove("filled");
 }
 
 
+function stepBack(e) {
+    e = e || window.event;
+    var code = e.which || e.keyCode;
 
-function throttle(func, ms) {
+    //press Ctrl + Z
+    if (code == 90 && e.ctrlKey && historyPaint.length != 0) {
+        let target = historyPaint.pop();
 
-  var isThrottled = false,
-    savedArgs,
-    savedThis;
+        if (!target.countOfFloodFill) {
+            //simple clean cell
+            cleanCell(target);
+        } else {
+            //clean after flood fill
+            let count = target.countOfFloodFill;
+            cleanCell(target);
+            for (var i = 0; i < count - 1; i++) {
+                target = historyPaint.pop();
+                cleanCell(target);
+            }
 
-  function wrapper() {
+        }
 
-    if (isThrottled) { 
-      savedArgs = arguments;
-      savedThis = this;
-      return;
+
     }
-
-    func.apply(this, arguments); 
-
-    isThrottled = true;
-
-    setTimeout(function() {
-      isThrottled = false; 
-      if (savedArgs) {
-        wrapper.apply(savedThis, savedArgs);
-        savedArgs = savedThis = null;
-      }
-    }, ms);
-  }
-
-  return wrapper;
 }
 
 
+function whichColor(e) {
+    var code = e.which || e.keyCode;
+    if (code != 3) {
+        return currentFirstColor;
+    }
+    return currentSecondColor;
+}
 
+
+function isDelete(e) {
+    e = e || window.event;
+    return e.keyCode != 8 ? e.preventDefault() : true;
+};
 
 
 

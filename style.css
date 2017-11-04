@@ -19,7 +19,6 @@ h1 {
 .container{
 	width: 50%;
 	margin: 0 auto;
-	
 	height: 100%;
 	position: relative;
 }
@@ -41,6 +40,15 @@ h1 {
 
 .flood-fill{
 	cursor:  url("img/fill-white.png") 8 8, pointer;
+
+}
+.option{
+	position: fixed;
+	left: 10px;
+	top: 10px;
+	width: 15%;
+	border-color: 1px solid white;
+	color: white;
 
 }
 
