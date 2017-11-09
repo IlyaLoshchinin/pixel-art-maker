@@ -26,6 +26,16 @@ let COLORS = [
 
 let historyPaint = [];
 
+historyPaint.getDrawingSet = function() {
+  let length = this.length;
+  let totalCellOfCanvas = sizeCanvas * 2;
+
+  if (length === 0) return false;
+  if (length <= totalCellOfCanvas) return new Set(this);
+  let trash = length - totalCellOfCanvas;
+  return new Set(this.splice(0, length - trash));
+};
+
 document.addEventListener('keydown', stepBack, false);
 
 const canvas = document.getElementById('canvas');
@@ -64,6 +74,32 @@ const checkbox = document.getElementById('checkbox');
 
 checkbox.addEventListener('change',
     (e) => floodFillMode.turnOn = !floodFillMode.turnOn, false);
+
+const confirmationMessage =
+  'Do you really want to leave without saving your drawing locally?';
+
+window.addEventListener('beforeunload', function(e) {
+  e.preventDefault();
+  if (!localStorage.getItem('drawing')) {
+    e.returnValue = confirmationMessage;
+    return confirmationMessage;
+  }
+});
+
+
+const saveLocallyButton = document.getElementById('saveLocal');
+saveLocallyButton.addEventListener('click', saveToLocalStorage);
+
+function saveToLocalStorage() {
+  if (historyPaint.length === 0) return false;
+  localStorage.setItem('drawing', historyPaint.getDrawingSet());
+  alert('Done! You\'ve saved a drawing!');
+}
+
+// function loadDrawingFromLS() {
+//
+// }
+
 
 const floodFillMode = new Proxy({turnOn: false}, {
     get(target, prop) {
