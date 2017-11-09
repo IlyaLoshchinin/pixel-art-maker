@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Pixel Art Maker</title>
 	<link rel="stylesheet" href="style.css">
 </head>
@@ -11,19 +12,20 @@
 		<div id="canvas" class="brush">
 			
 		</div>
-		<div id="palette">
+		<div id="palette" class="palette">
 			
 		</div>
-		<div id="setting">
+		<div class="setting">
 
 			<div class="row-flex">
-				
-				<p>Current color: LBM-><div class="lbm-color"></div>
+
+				<p> Current color: LBM-><div class="lbm-color"></div>
 				 RMB-><div class="rbm-color"></div>
 				 <input type="checkbox" class="checkbox" id="checkbox" />
-					<label for="checkbox">Flood fill mode</label></p>
+					<label for="checkbox">Flood fill mode</label>
+				</p>
 					<p>Count of cell (NxN): 
-					<input id="sizeCanvas" type="number" list="sizes" min="10" max="90" onkeydown="isDelete()" value="40" step="5">
+					<input id="sizeCanvas" title="Count of cell" type="number" list="sizes" min="10" max="90" value="40" step="5">
 					<datalist id="sizes">
 				    <option value="10">10x10</option>
 				    <option value="20">20x20</option>
@@ -38,7 +40,7 @@
 			</div>
 			<div class="row-flex">
 			<div class="custom-color">Select custom color ->
-				<input id="colorPicker" type="color"></div>
+				<input id="colorPicker" type="color" title="Picker for a favorite color"></div>
 			and click the<div class="color-result"></div>(LBM or RBM) to choose.
 			</div>
 
