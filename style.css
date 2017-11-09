@@ -107,6 +107,12 @@ div[class*='color-'] {
   box-shadow: none;
 }
 
+.save-load-butt > button {
+    width: 33.3%;
+    height: 40px;
+}
+
+
 @media (max-width: 991px) {
   .container {
     width: 70%;
