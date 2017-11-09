@@ -1,6 +1,6 @@
 'use strict';
 
-var COLORS = [
+let COLORS = [
     'white',
     'black',
     'red',
@@ -20,89 +20,101 @@ var COLORS = [
     'gold',
     'indigo',
     'greenyellow',
-    'fuchsia'
-]; //20 colors
+    'fuchsia',
+]; // 20 colors
 
 
-var historyPaint = [];
+let historyPaint = [];
 
-var container = document.querySelector(".container");
-var colorPickerValue = document.querySelector(".color-result");
-var lbmColor = document.querySelector(".lbm-color").style;
-var rbmColor = document.querySelector(".rbm-color").style;
+document.addEventListener('keydown', stepBack, false);
 
+const canvas = document.getElementById('canvas');
+const palette = document.getElementById('palette');
+const sizeCanvas = document.getElementById('sizeCanvas');
 
-//default size 40x40
-var canvasSize = 40;
-var currentFirstColor = lbmColor.backgroundColor = COLORS[0];
-var currentSecondColor = rbmColor.backgroundColor = COLORS[1];
+canvas.addEventListener('mousedown', paintListener, false);
+canvas.addEventListener('contextmenu', (e) => e.preventDefault(), false);
+sizeCanvas.addEventListener('change', repaintCanvas, false);
+sizeCanvas.addEventListener('keydown', isDelete, false);
 
-
-document.addEventListener("keydown", stepBack, false);
-
-canvas.addEventListener("mousedown", paintListener, false);
-canvas.addEventListener("contextmenu", (e) => e.preventDefault(), false);
+palette.addEventListener('mousedown', colorListener, false);
+palette.addEventListener('contextmenu', (e) => e.preventDefault(), false);
 
 
-palette.addEventListener("mousedown", colorListener, false);
-palette.addEventListener("contextmenu", (e) => e.preventDefault(), false);
+const container = document.querySelector('.container');
 
-colorPickerValue.addEventListener("mousedown", colorListener, false);
-colorPickerValue.addEventListener("contextmenu", (e) => e.preventDefault(), false);
+let lbmColor = document.querySelector('.lbm-color').style;
+let rbmColor = document.querySelector('.rbm-color').style;
 
+let currentFirstColor = lbmColor.backgroundColor = COLORS[0];
+let currentSecondColor = rbmColor.backgroundColor = COLORS[1];
 
-colorPicker.addEventListener("change", (e) => colorPickerValue.style.backgroundColor = e.target.value, false);
+const colorPickerValue = document.querySelector('.color-result');
+const colorPicker = document.getElementById('colorPicker');
 
-sizeCanvas.addEventListener("change", repaintCanvas, false);
+colorPickerValue.addEventListener('mousedown', colorListener, false);
+colorPickerValue.addEventListener(
+    'contextmenu', (e) => e.preventDefault(), false
+);
 
-checkbox.addEventListener("change", (e) => floodFillMode.turnOn = floodFillMode.turnOn ? false : true, false);
+colorPicker.addEventListener('change',
+    (e) => colorPickerValue.style.backgroundColor = e.target.value, false);
 
-var floodFillMode = new Proxy({ turnOn: false }, {
+const checkbox = document.getElementById('checkbox');
+
+checkbox.addEventListener('change',
+    (e) => floodFillMode.turnOn = !floodFillMode.turnOn, false);
+
+const floodFillMode = new Proxy({turnOn: false}, {
     get(target, prop) {
         return target[prop];
     },
     set(target, prop, value) {
-        canvas.className = canvas.className == "brush" ? "flood-fill" : "brush";
+        canvas.className =
+            (canvas.className === 'brush') ? 'flood-fill' : 'brush';
         target[prop] = value;
         return true;
-    }
+    },
 });
-
 
 
 function colorListener(e) {
     e = e || window.event;
-    var target = e.target;
+    let target = e.target;
 
-    var newColor = getComputedStyle(target).backgroundColor;
-    if (e.which != 3) {
+    let newColor = getBGColor(target);
+    if (e.which !== 3) {
         lbmColor.backgroundColor = currentFirstColor = newColor;
     } else {
         rbmColor.backgroundColor = currentSecondColor = newColor;
     }
-
 }
 
 
 function paintListener(e) {
     if (!floodFillMode.turnOn) {
-
         e.preventDefault();
         fillColor();
-        canvas.addEventListener("mouseenter", fillColor, true);
-        canvas.addEventListener("mouseup", (e) => canvas.removeEventListener("mouseenter", fillColor, true), false)
-
-    } else { //turned flood fill mode on
-
+        canvas.addEventListener('mouseenter', fillColor, true);
+        canvas.addEventListener('mouseup', (e) =>
+                canvas.removeEventListener('mouseenter', fillColor, true)
+            , false);
+    } else { // turned flood fill mode on
         e = e || window.event;
-        var target = e.target;
+        let target = e.target;
         let prev = historyPaint.length;
-        floodFill(parseInt(getX(target)), parseInt(getY(target)), getBGColor(target), whichColor(e));
+        floodFill(
+            parseInt(getX(target)),
+            parseInt(getY(target)),
+            getBGColor(target),
+            whichColor(e)
+        );
 
-        // if size of array(historyPaint) did't change => set prev value to the last element of historyPaint otherwise subtraction of curr size and prev value
-        historyPaint[historyPaint.length - 1].countOfFloodFill = prev != historyPaint.length ? historyPaint.length - prev : prev;
+// eslint-disable-next-line max-len
+// if size of array(historyPaint) did't change => set prev value to the last element of historyPaint otherwise subtraction of curr size and prev value
+        historyPaint[historyPaint.length - 1].countOfFloodFill =
+            prev !== historyPaint.length ? historyPaint.length - prev : prev;
     }
-
 }
 
 function getBGColor(target) {
@@ -110,29 +122,35 @@ function getBGColor(target) {
 }
 
 function getX(target) {
-    return target.x == 0 || target.x ? target.x : target.getAttribute("x");
+    return target.x === 0 || target.x ? target.x : target.getAttribute('x');
 }
 
 function getY(target) {
-    return target.y == 0 || target.y ? target.y : target.getAttribute("y");
+    return target.y === 0 || target.y ? target.y : target.getAttribute('y');
 }
-
 
 
 function fillColor(e) {
     e = e || window.event;
-    var target = e.target;
-    let newColor, oldColor;
-    if (target.className.includes("cell")) {
+    let target = e.target;
+    let newColor;
+    let oldColor;
+    if (target.className.includes('cell')) {
         oldColor = getBGColor(target);
 
-        if (e.which != 3) {
+        if (e.which !== 3) {
             target.style.backgroundColor = newColor = currentFirstColor;
         } else {
             target.style.backgroundColor = newColor = currentSecondColor;
         }
 
-        historyPaint.push({ x: parseInt(getX(target)), y: parseInt(getY(target)), color: newColor, oldColor: oldColor, hashCode: getX(target) + "-" + getY(target) });
+        historyPaint.push({
+            x: parseInt(getX(target)),
+            y: parseInt(getY(target)),
+            color: newColor,
+            oldColor: oldColor,
+            hashCode: getX(target) + '-' + getY(target),
+        });
         // console.log(historyPaint.length);
 
         target.classList.add('filled');
@@ -145,35 +163,44 @@ function repaintCanvas(e) {
         canvas.innerHTML = '';
     }
     let newCountOfCell = e.target.value;
-    setTimeout(drowCanvas(newCountOfCell >= 10 ? newCountOfCell : 10), 4);
+    setTimeout(drawCanvas(newCountOfCell >= 10 ? newCountOfCell : 10), 4);
 }
 
-function drowCanvas(size = 40) {
+function drawCanvas(size = 40) {
     sizeCanvas.value = size;
-    var containerComputed = getComputedStyle(container);
-    var dimention = `${parseInt(containerComputed.width, 10)  / size}px`
-    for (var i = 0; i < size; i++) {
-        var cell = document.createElement("div");
+    let containerComputed = getComputedStyle(container);
+    let dimension = `${parseInt(containerComputed.width, 10) / size}px`;
+    for (let i = 0; i < size; i++) {
+        let cell = document.createElement('div');
         cell.className = 'cell';
-        cell.style.width = dimention;
-        cell.style.height = dimention;
-        cell.setAttribute("x", i);
-        for (var j = 0; j < size; j++) {
-            cell.setAttribute("y", j);
+        cell.style.width = dimension;
+        cell.style.height = dimension;
+        cell.setAttribute('x', i);
+        for (let j = 0; j < size; j++) {
+            cell.setAttribute('y', j);
             canvas.appendChild(cell.cloneNode(false));
         }
     }
 }
 
+/**
+* @param {int} x - description
+* @param {int} y - description
+* @param {Element} oldColor - description
+* @param {Element} newColor - description
+*
+*
+**/
 function floodFill(x, y, oldColor, newColor) {
+    let target = document.querySelector(`.cell[x='${x}'][y='${y}']`);
 
-    var target = document.querySelector(`.cell[x='${x}'][y='${y}']`);
-
-    if (!target || getComputedStyle(target).backgroundColor != oldColor || oldColor == newColor) {
+    if (!target || getBGColor(target) !== oldColor || oldColor === newColor) {
         return;
     }
 
-    historyPaint.push({ x: x, y: y, color: newColor, oldColor: oldColor, hashCode: x + "-" + y });
+    historyPaint.push(
+        {x: x, y: y,
+        color: newColor, oldColor: oldColor, hashCode: x + '-' + y});
     target.style.backgroundColor = newColor;
     target.classList.add('filled');
     floodFill(x - 1, y, oldColor, newColor);
@@ -182,60 +209,59 @@ function floodFill(x, y, oldColor, newColor) {
     floodFill(x, y + 1, oldColor, newColor);
 }
 
-function drowPalette(colors = ['blue', 'red', 'black', 'white']) {
-    console.log(colors.length);
-    for (var i = 0; i < colors.length; i++) {
-        var colorDiv = document.createElement("div");
-        colorDiv.className = `color-${i+1}`;
+function drawPalette(colors = ['blue', 'red', 'black', 'white']) {
+    // console.log(colors.length);
+    for (let i = 0; i < colors.length; i++) {
+        let colorDiv = document.createElement('div');
+        colorDiv.className = `color-${i + 1}`;
         colorDiv.style.backgroundColor = colors[i];
-        colorDiv.style.width = `${container.clientWidth  / colors.length }px`;
+        colorDiv.style.width = `${container.clientWidth / colors.length }px`;
         colorDiv.style.height = '40px';
         palette.appendChild(colorDiv);
     }
-
 }
 
 function cleanCell(target) {
     if (!target) return;
 
-    var cell = document.querySelector(`.cell[x='${getX(target)}'][y='${getY(target)}']`);
+    let cell = document.querySelector(
+        `.cell[x='${getX(target)}'][y='${getY(target)}']`
+    );
     cell.style.backgroundColor = target.oldColor;
 
-    if (!historyPaint.find((el) => el.hashCode == target.hashCode ? true : undefined))
-        cell.classList.remove("filled");
+    if (!historyPaint.find((el) => el.hashCode === target.hashCode ? true : undefined)) {
+        cell.classList.remove('filled');
+    }
 }
 
 
 function stepBack(e) {
     e = e || window.event;
-    var code = e.which || e.keyCode;
+    let code = e.which || e.keyCode;
 
-    //press Ctrl + Z
-    if (code == 90 && e.ctrlKey && historyPaint.length != 0) {
+    // press Ctrl + Z
+    if (code === 90 && e.ctrlKey && historyPaint.length !== 0) {
         let target = historyPaint.pop();
 
         if (!target.countOfFloodFill) {
-            //simple clean cell
+            // simple clean cell
             cleanCell(target);
         } else {
-            //clean after flood fill
+            // clean after flood fill
             let count = target.countOfFloodFill;
             cleanCell(target);
-            for (var i = 0; i < count - 1; i++) {
+            for (let i = 0; i < count - 1; i++) {
                 target = historyPaint.pop();
                 cleanCell(target);
             }
-
         }
-
-
     }
 }
 
 
 function whichColor(e) {
-    var code = e.which || e.keyCode;
-    if (code != 3) {
+    let code = e.which || e.keyCode;
+    if (code !== 3) {
         return currentFirstColor;
     }
     return currentSecondColor;
@@ -244,15 +270,12 @@ function whichColor(e) {
 
 function isDelete(e) {
     e = e || window.event;
-    return e.keyCode != 8 ? e.preventDefault() : true;
-};
+    return e.keyCode !== 8 ? e.preventDefault() : true;
+}
 
 
-
-//start
-document.addEventListener("DOMContentLoaded", () => {
-
-    drowCanvas();
-    drowPalette(COLORS);
-
-}, false)
+// start
+document.addEventListener('DOMContentLoaded', () => {
+    drawCanvas();
+    drawPalette(COLORS);
+}, false);
