@@ -1,116 +1,134 @@
-*{
-	padding: 0;
-	margin: 0;
+* {
+  padding: 0;
+  margin: 0;
 }
-body{
-	height: 100%;
-	width: 100%;
-	background-color: #4D4D4D;
-	position: absolute;
-	font-family: monospace;
+
+body {
+  height: 100%;
+  width: 100%;
+  background-color: #4d4d4d;
+  position: absolute;
+  font-family: monospace;
 }
 
 h1 {
-	text-align: center;
-	font-size: 3em;
-	color: white;
+  text-align: center;
+  font-size: 3em;
+  color: white;
 }
 
-.container{
-	width: 50%;
-	margin: 0 auto;
-	height: 100%;
-	position: relative;
-}
-.row{
-	display: block;
-	height: 20px;
+.container {
+  width: 50%;
+  margin: 0 auto;
+  height: 100%;
+  position: relative;
 }
 
-#canvas{
-	line-height: 0;
-	width: 100%;
-	
-	
+.row {
+  display: block;
+  height: 20px;
 }
 
-.brush{
-	cursor:  url("img/brush-white.png") -2 -3, pointer;
+#canvas {
+  line-height: 0;
+  width: 100%;
 }
 
-.flood-fill{
-	cursor:  url("img/fill-white.png") 8 8, pointer;
+.brush { cursor: pointer; }
 
-}
-.option{
-	position: fixed;
-	left: 10px;
-	top: 10px;
-	width: 15%;
-	border-color: 1px solid white;
-	color: white;
-
+.flood-fill {
+  cursor: url("img/fill.png") 8 8, pointer;
 }
 
-#palette{
-	margin-top: 5px;
-	display: flex;
-	width: 100%;
-	align-content: stretch;
+.option {
+  position: fixed;
+  left: 10px;
+  top: 10px;
+  width: 15%;
+  color: white;
 }
-div[class*='color-']{
-	display: inline-block;
-	cursor: pointer;
-    transition: all 0.5s ease ;
+
+.palette {
+  margin-top: 5px;
+  display: flex;
+  width: 100%;
+  align-content: stretch;
 }
+
+div[class*='color-'] {
+  display: inline-block;
+  cursor: pointer;
+  transition: all 0.5s ease;
+}
+
 /* #palette div:hover{
 	transform: scaleX(1.1);
 } */
 
-
-#setting{
-	background: white;
-	width: 100%;
-	min-height: 100px;
-	margin-top: 10px;
-}
-.row-flex{
-	display: flex;
-	flex-direction: row;
-	justify-content:  flex-start;
-	align-items:  center;
-	flex-wrap:  wrap;
-	padding-top: 10px;
-	font-size: 2em;
-}
-.custom-color{
-	margin-right: 20px;
+.setting {
+  background: white;
+  width: 100%;
+  min-height: 100px;
+  margin-top: 10px;
 }
 
-.color-result, .lbm-color, .rbm-color{
-	background-color: #060606;
-	border: 1px solid black;
-	height: 30px;
-	width: 40px;
-	margin: 0 10px 0 10px
+.row-flex {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-flow: wrap row;
+  padding-top: 10px;
+  font-size: 2em;
 }
 
+.custom-color {
+  margin-right: 20px;
+}
 
+.color-result,
+.lbm-color,
+.rbm-color {
+  background-color: #060606;
+  border: 1px solid black;
+  height: 30px;
+  width: 40px;
+  margin: 0 10px;
+}
 
-.cell{
-	display: inline-block;
-	overflow: hidden;
-	color: white;
-	box-shadow: inset 0 0 0 1px #C9C9C9;
-	 background-color: #CCCCCC;
+.cell {
+  display: inline-block;
+  overflow: hidden;
+  color: white;
+  box-shadow: inset 0 0 0 1px #c9c9c9;
+  background-color: #ccc;
 }
 
 .filled {
-	box-shadow: none;
+  box-shadow: none;
 }
 
-/*Thanks for example below
-source: http://dimox.name/custom-checkboxes-and-radio-buttons-using-css-only
+@media (max-width: 991px) {
+  .container {
+    width: 70%;
+  }
+}
+
+@media (max-width: 575px) {
+  .option{ display: none; }
+  .container { width: 90%; }
+
+  .row-flex { font-size: 16px;
+    line-height: 2.0;}
+}
+
+@media (max-width: 320px) {
+  .container {
+    width: 100%;
+  }
+}
+
+/*  Thanks for example below
+    source: http://dimox.name/custom-checkboxes-and-radio-buttons-using-css-only
 */
 .checkbox {
   vertical-align: top;
@@ -126,38 +144,41 @@ source: http://dimox.name/custom-checkboxes-and-radio-buttons-using-css-only
   position: absolute;
   opacity: 0;
 }
+
 .checkbox:not(checked) + label {
-  position: relative; 
-  padding: 0 60px 0 0; 
+  position: relative;
+  padding: 0 60px 0 0;
+  margin-right: 10px;
 }
 
 /* Оформление первой части чекбокса в выключенном состоянии (фон). */
-.checkbox:not(checked) + label:before {
+.checkbox:not(checked) + label::before {
   content: '';
   position: absolute;
   top: 3px;
   right: 0;
   width: 50px;
   height: 25px;
-  background: #CDD1DA;
-  box-shadow: inset 0 2px 3px rgba(0,0,0,.2);
+  background: #cdd1da;
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.2);
 }
+
 /* Оформление второй части чекбокса в выключенном состоянии (переключатель). */
-.checkbox:not(checked) + label:after {
+.checkbox:not(checked) + label::after {
   content: '';
   position: absolute;
   top: 5px;
   right: 27px;
   width: 21px;
   height: 21px;
-  background: #FFF;
-  transition: all .2s; 
+  background: #fff;
+  transition: all 0.2s;
 }
 
-.checkbox:checked + label:before {
-  background: #0198C4;
+.checkbox:checked + label::before {
+  background: #0198c4;
 }
 
-.checkbox:checked + label:after {
+.checkbox:checked + label::after {
   right: 2px;
 }
