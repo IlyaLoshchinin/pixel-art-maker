@@ -26,15 +26,6 @@ let COLORS = [
 
 let historyPaint = [];
 
-historyPaint.getDrawingSet = function() {
-  let length = this.length;
-  let totalCellOfCanvas = sizeCanvas * 2;
-
-  if (length === 0) return false;
-  if (length <= totalCellOfCanvas) return new Set(this);
-  let trash = length - totalCellOfCanvas;
-  return new Set(this.splice(0, length - trash));
-};
 
 document.addEventListener('keydown', stepBack, false);
 
@@ -80,25 +71,57 @@ const confirmationMessage =
 
 window.addEventListener('beforeunload', function(e) {
   e.preventDefault();
-  if (!localStorage.getItem('drawing')) {
+  if (!localStorage.getItem(keyDrawing)) {
     e.returnValue = confirmationMessage;
     return confirmationMessage;
   }
 });
 
+const clearCanvasButt = document.getElementById('clearCanvas');
+clearCanvasButt.addEventListener('click', clearCanvas);
 
+const keyDrawing = 'drawing';
 const saveLocallyButton = document.getElementById('saveLocal');
 saveLocallyButton.addEventListener('click', saveToLocalStorage);
 
 function saveToLocalStorage() {
   if (historyPaint.length === 0) return false;
-  localStorage.setItem('drawing', historyPaint.getDrawingSet());
+  localStorage.setItem(keyDrawing, getDrawing(historyPaint));
   alert('Done! You\'ve saved a drawing!');
 }
 
-// function loadDrawingFromLS() {
-//
-// }
+function loadDrawingFromLS() {
+    return JSON.parse(localStorage.getItem(keyDrawing));
+}
+
+function simpleFillCell(target, fillColor) {
+  if (!target && !fillColor) return false;
+  target.style.backgroundColor = fillColor;
+  target.classList.add('filled');
+}
+
+function loadCanvas() {
+  if (localStorage.getItem(keyDrawing)) {
+    historyPaint = JSON.parse(localStorage.getItem(keyDrawing));
+  }
+  let dataOfDrawing = loadDrawingFromLS();
+  if (!dataOfDrawing || dataOfDrawing.length === 0) return false;
+  dataOfDrawing.forEach((el) => {
+    let cell = document.querySelector(
+      `.cell[x='${getX(el)}'][y='${getY(el)}']`
+    );
+    simpleFillCell(cell, el.color);
+  });
+}
+
+function getDrawing(historyPaint) {
+  let length = historyPaint.length;
+  let totalCellOfCanvas = Math.pow(sizeCanvas.value, 2);
+  if (length === 0) return false;
+  if (length <= totalCellOfCanvas) return JSON.stringify(historyPaint);
+  //TODO make Set from array and pass to return
+  // return JSON.stringify(historyPaint.splice(0, length - trash));
+}
 
 
 const floodFillMode = new Proxy({turnOn: false}, {
@@ -165,7 +188,6 @@ function getY(target) {
     return target.y === 0 || target.y ? target.y : target.getAttribute('y');
 }
 
-
 function fillColor(e) {
     e = e || window.event;
     let target = e.target;
@@ -193,12 +215,13 @@ function fillColor(e) {
     }
 }
 
-function repaintCanvas(e) {
+
+function repaintCanvas(e, size) {
     e = e || window.event;
+    let newCountOfCell = !size ? e.target.value : size;
     if (canvas.hasChildNodes()) {
-        canvas.innerHTML = '';
+      canvas.innerHTML = '';
     }
-    let newCountOfCell = e.target.value;
     setTimeout(drawCanvas(newCountOfCell >= 10 ? newCountOfCell : 10), 4);
 }
 
@@ -265,10 +288,12 @@ function cleanCell(target) {
     );
     cell.style.backgroundColor = target.oldColor;
 
-    if (!historyPaint.find((el) => el.hashCode === target.hashCode ? true : undefined)) {
+    if (!historyPaint.find(
+      (el) => el.hashCode === target.hashCode ? true : undefined)) {
         cell.classList.remove('filled');
     }
 }
+
 
 
 function stepBack(e) {
@@ -303,6 +328,11 @@ function whichColor(e) {
     return currentSecondColor;
 }
 
+function clearCanvas() {
+  localStorage.clear();
+  historyPaint = [];
+  repaintCanvas(null, sizeCanvas.value);
+}
 
 function isDelete(e) {
     e = e || window.event;
@@ -314,4 +344,5 @@ function isDelete(e) {
 document.addEventListener('DOMContentLoaded', () => {
     drawCanvas();
     drawPalette(COLORS);
+    loadCanvas();
 }, false);
