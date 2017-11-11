@@ -29,7 +29,6 @@ const blankColor = '#cccccc';
 
 let historyPaint = [];
 
-
 document.addEventListener('keydown', stepBack, false);
 
 const canvas = document.getElementById('canvas');
@@ -43,7 +42,6 @@ sizeCanvas.addEventListener('keydown', isDelete, false);
 
 palette.addEventListener('mousedown', colorListener, false);
 palette.addEventListener('contextmenu', (e) => e.preventDefault(), false);
-
 
 const container = document.querySelector('.container');
 
