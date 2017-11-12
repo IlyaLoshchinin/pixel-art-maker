@@ -1,4 +1,4 @@
-# Pixel Art Maker | ![Link](http://ilyaloshchinin-pixel-art-maker.surge.sh)
+# Pixel Art Maker | [Link](http://ilyaloshchinin-pixel-art-maker.surge.sh)
 
 In this exercise, you'll create your own pixel art maker which will allow a user to choose colors from a palette and then paint pixel art. The interface is completely up to you, but it could look something like this.
 
